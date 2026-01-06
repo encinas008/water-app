@@ -263,6 +263,9 @@ fun PartnerItem(partner: PartnerOutputDto, onClick: () -> Unit) {
         Text(partner.fullName, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
         Text("Nro. Socio: ${partner.partnerNumber ?: "N/A"} - Medidor: ${partner.waterMeterNumber ?: "N/A"}", 
             fontSize = 14.sp, color = MaterialTheme.colorScheme.secondary)
+        if (partner.connectionStatusCode == "CUT_OFF") {
+            Text("ESTADO: CORTADO", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        }
         Divider(modifier = Modifier.padding(top = 8.dp), thickness = 0.5.dp)
     }
 }

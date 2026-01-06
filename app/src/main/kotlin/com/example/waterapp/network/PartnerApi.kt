@@ -9,7 +9,8 @@ data class PartnerOutputDto(
     val partnerNumber: Long?,
     val fullName: String,
     val waterMeterNumber: String?,
-    val address: String?
+    val address: String?,
+    val connectionStatusCode: String? = null
 )
 
 interface PartnerApi {
