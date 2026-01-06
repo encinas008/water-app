@@ -196,18 +196,34 @@ fun ConsumptionScreen(
                     minLines = 3
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                val isInactive = selectedPartner.connectionStatusCode == "INACTIVE"
+                
+                if (isInactive) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                    ) {
+                        Text(
+                            text = "No se puede registrar consumo de agua con el estado PASIVO.",
+                            modifier = Modifier.padding(16.dp),
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
+                }
 
                 val readingValue = reading.toDoubleOrNull() ?: 0.0
                 Button(
                     onClick = { showConfirmDialog = true },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    enabled = reading.isNotBlank() && readingValue >= 1.0 && state !is ConsumptionState.Saving
+                    enabled = !isInactive && reading.isNotBlank() && readingValue >= 1.0 && state !is ConsumptionState.Saving
                 ) {
                     if (state is ConsumptionState.Saving) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text("REGISTRAR CONSUMO", fontWeight = FontWeight.Bold)
+                        val buttonText = if (isInactive) "REGISTRO NO PERMITIDO" else "REGISTRAR CONSUMO"
+                        Text(buttonText, fontWeight = FontWeight.Bold)
                     }
                 }
                 
@@ -265,6 +281,10 @@ fun PartnerItem(partner: PartnerOutputDto, onClick: () -> Unit) {
             fontSize = 14.sp, color = MaterialTheme.colorScheme.secondary)
         if (partner.connectionStatusCode == "CUT_OFF") {
             Text("ESTADO: CORTADO", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        } else if (partner.connectionStatusCode == "SUSPENDED") {
+            Text("ESTADO: SUSPENDIDA", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+        } else if (partner.connectionStatusCode == "INACTIVE") {
+            Text("ESTADO: PASIVO", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.outline)
         }
         Divider(modifier = Modifier.padding(top = 8.dp), thickness = 0.5.dp)
     }
